@@ -52,19 +52,19 @@ func (u *Updater) Update(ctx context.Context, feedConfig *config.Feed) error {
 	started := time.Now()
 
 	if err := u.updateFeed(ctx, feedConfig); err != nil {
-		return err
+		return errors.Wrap(err, "update failed")
 	}
 
 	if err := u.downloadEpisodes(ctx, feedConfig); err != nil {
-		return err
+		return errors.Wrap(err, "download failed")
 	}
 
 	if err := u.buildXML(ctx, feedConfig); err != nil {
-		return err
+		return errors.Wrap(err, "xml build failed")
 	}
 
 	if err := u.buildOPML(ctx); err != nil {
-		return err
+		return errors.Wrap(err, "opml build failed")
 	}
 
 	if err := u.cleanup(ctx, feedConfig); err != nil {
@@ -105,7 +105,10 @@ func (u *Updater) downloadEpisodes(ctx context.Context, feedConfig *config.Feed)
 	var (
 		feedID       = feedConfig.ID
 		downloadList []*model.Episode
+		pageSize     = feedConfig.PageSize
 	)
+
+	log.WithField("page_size", pageSize).Info("downloading episodes")
 
 	// Build the list of files to download
 	if err := u.db.WalkEpisodes(ctx, feedID, func(episode *model.Episode) error {
@@ -126,6 +129,13 @@ func (u *Updater) downloadEpisodes(ctx context.Context, feedConfig *config.Feed)
 			}
 		}
 
+		// Limit the number of episodes downloaded at once
+		pageSize--
+		if pageSize <= 0 {
+			return nil
+		}
+
+		log.Debugf("adding %s (%q) to the list", episode.ID, episode.Title)
 		downloadList = append(downloadList, episode)
 		return nil
 	}); err != nil {
@@ -186,7 +196,7 @@ func (u *Updater) downloadEpisodes(ctx context.Context, feedConfig *config.Feed)
 			// We still need to generate XML, so just stop sending download requests and
 			// retry next time
 			if err == ytdl.ErrTooManyRequests {
-				logger.Info("Server responded with a 'Too Many Requests' error")
+				logger.Warn("server responded with a 'Too Many Requests' error")
 				break
 			}
 
@@ -253,7 +263,6 @@ func (u *Updater) buildXML(ctx context.Context, feedConfig *config.Feed) error {
 }
 
 func (u *Updater) buildOPML(ctx context.Context) error {
-
 	// Build OPML with data received from builder
 	log.Debug("building podcast OPML")
 	opml, err := feed.BuildOPML(ctx, u.config, u.db, u.fs)
