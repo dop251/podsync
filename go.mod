@@ -1,4 +1,4 @@
-module github.com/mxpv/podsync
+module github.com/dop251/podsync
 
 require (
 	github.com/BrianHicks/finch v0.0.0-20140409222414-419bd73c29ec

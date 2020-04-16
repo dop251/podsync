@@ -5,9 +5,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/mxpv/podsync/pkg/config"
-	"github.com/mxpv/podsync/pkg/link"
-	"github.com/mxpv/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/config"
+	"github.com/dop251/podsync/pkg/link"
+	"github.com/dop251/podsync/pkg/model"
 )
 
 var (

@@ -24,7 +24,7 @@ Parameters:
   PodsyncVersion:
     Type: String
     Default: latest
-    Description: Podsync version to use (see https://github.com/mxpv/podsync/releases)
+    Description: Podsync version to use (see https://github.com/dop251/podsync/releases)
 
   PodsyncPort:
     Type: Number
@@ -36,13 +36,13 @@ Parameters:
     Type: String
     Default: ''
     Description: |
-      Key to use for YouTube API access (see https://github.com/mxpv/podsync/blob/master/docs/how_to_get_youtube_api_key.md)
+      Key to use for YouTube API access (see https://github.com/dop251/podsync/blob/master/docs/how_to_get_youtube_api_key.md)
 
   VimeoAccessToken:
     Type: String
     Default: ''
     Description: |
-      Key to use for Vimeo API access (see https://github.com/mxpv/podsync/blob/master/docs/how_to_get_vimeo_token.md)
+      Key to use for Vimeo API access (see https://github.com/dop251/podsync/blob/master/docs/how_to_get_vimeo_token.md)
 
   FeedId:
     Type: String

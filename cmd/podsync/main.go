@@ -14,10 +14,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/mxpv/podsync/pkg/config"
-	"github.com/mxpv/podsync/pkg/db"
-	"github.com/mxpv/podsync/pkg/fs"
-	"github.com/mxpv/podsync/pkg/ytdl"
+	"github.com/dop251/podsync/pkg/config"
+	"github.com/dop251/podsync/pkg/db"
+	"github.com/dop251/podsync/pkg/fs"
+	"github.com/dop251/podsync/pkg/ytdl"
 )
 
 type Opts struct {

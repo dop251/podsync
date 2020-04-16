@@ -6,7 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/mxpv/podsync/pkg/config"
+	"github.com/dop251/podsync/pkg/config"
 )
 
 type Server struct {

@@ -9,8 +9,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/mxpv/podsync/pkg/config"
-	"github.com/mxpv/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/config"
+	"github.com/dop251/podsync/pkg/model"
 )
 
 func TestBuildOPML(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/mxpv/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/model"
 )
 
 type Version int

@@ -14,12 +14,12 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/mxpv/podsync/pkg/config"
-	"github.com/mxpv/podsync/pkg/db"
-	"github.com/mxpv/podsync/pkg/feed"
-	"github.com/mxpv/podsync/pkg/fs"
-	"github.com/mxpv/podsync/pkg/model"
-	"github.com/mxpv/podsync/pkg/ytdl"
+	"github.com/dop251/podsync/pkg/config"
+	"github.com/dop251/podsync/pkg/db"
+	"github.com/dop251/podsync/pkg/feed"
+	"github.com/dop251/podsync/pkg/fs"
+	"github.com/dop251/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/ytdl"
 )
 
 type Downloader interface {

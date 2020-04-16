@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/mxpv/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/model"
 )
 
 var (

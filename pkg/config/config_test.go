@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/mxpv/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/model"
 )
 
 func TestLoadConfig(t *testing.T) {

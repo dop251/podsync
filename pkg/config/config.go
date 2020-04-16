@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 
-	"github.com/mxpv/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/model"
 )
 
 // Feed is a configuration for a feed

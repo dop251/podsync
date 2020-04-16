@@ -6,9 +6,9 @@ package feed
 
 import (
 	context "context"
+	config "github.com/dop251/podsync/pkg/config"
+	model "github.com/dop251/podsync/pkg/model"
 	gomock "github.com/golang/mock/gomock"
-	config "github.com/mxpv/podsync/pkg/config"
-	model "github.com/mxpv/podsync/pkg/model"
 	reflect "reflect"
 )
 

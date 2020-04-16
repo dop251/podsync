@@ -9,8 +9,8 @@ import (
 	itunes "github.com/eduncan911/podcast"
 	"github.com/pkg/errors"
 
-	"github.com/mxpv/podsync/pkg/config"
-	"github.com/mxpv/podsync/pkg/model"
+	"github.com/dop251/podsync/pkg/config"
+	"github.com/dop251/podsync/pkg/model"
 )
 
 func Build(ctx context.Context, feed *model.Feed, cfg *config.Feed, provider urlProvider) (*itunes.Podcast, error) {

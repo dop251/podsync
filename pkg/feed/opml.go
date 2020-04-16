@@ -7,7 +7,7 @@ import (
 	"github.com/gilliek/go-opml/opml"
 	"github.com/pkg/errors"
 
-	"github.com/mxpv/podsync/pkg/config"
+	"github.com/dop251/podsync/pkg/config"
 )
 
 func BuildOPML(ctx context.Context, config *config.Config, db feedProvider, provider urlProvider) (string, error) {

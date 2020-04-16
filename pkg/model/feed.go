@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/mxpv/podsync/pkg/link"
+	"github.com/dop251/podsync/pkg/link"
 )
 
 // Quality to use when downloading episodes
