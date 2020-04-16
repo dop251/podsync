@@ -77,9 +77,9 @@ func (dl YoutubeDl) Download(ctx context.Context, feedConfig *config.Feed, episo
 		// YouTube might block host with HTTP Error 429: Too Many Requests
 		if strings.Contains(output, "HTTP Error 429") {
 			return nil, ErrTooManyRequests
-		} else {
-			log.Error(output)
 		}
+
+		log.Error(output)
 
 		return nil, errors.New(output)
 	}
