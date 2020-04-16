@@ -29,6 +29,11 @@ type YoutubeDl struct {
 	path string
 }
 
+type tempFile struct {
+	*os.File
+	dir string
+}
+
 func New(ctx context.Context) (*YoutubeDl, error) {
 	path, err := exec.LookPath("youtube-dl")
 	if err != nil {
@@ -49,22 +54,23 @@ func New(ctx context.Context) (*YoutubeDl, error) {
 
 	log.Infof("using youtube-dl %s", version)
 
-	// Make sure ffmpeg exists
-	output, err := exec.CommandContext(ctx, "ffmpeg", "-version").CombinedOutput()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not find ffmpeg")
-	}
-
-	log.Infof("using ffmpeg %s", output)
-
 	return ytdl, nil
 }
 
-func (dl YoutubeDl) Download(ctx context.Context, feedConfig *config.Feed, episode *model.Episode) (io.ReadCloser, error) {
+func (dl YoutubeDl) Download(ctx context.Context, feedConfig *config.Feed, episode *model.Episode) (r io.ReadCloser, err error) {
 	tmpDir, err := ioutil.TempDir("", "podsync-")
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get temp dir for download")
 	}
+
+	defer func() {
+		if err != nil {
+			err1 := os.RemoveAll(tmpDir)
+			if err1 != nil {
+				log.Errorf("Could not remove temp dir: %v", err1)
+			}
+		}
+	}()
 
 	// filePath with YoutubeDl template format
 	filePath := filepath.Join(tmpDir, fmt.Sprintf("%s.%s", episode.ID, "%(ext)s"))
@@ -95,7 +101,7 @@ func (dl YoutubeDl) Download(ctx context.Context, feedConfig *config.Feed, episo
 		return nil, errors.Wrap(err, "failed to open downloaded file")
 	}
 
-	return f, nil
+	return &tempFile{File: f, dir: tmpDir}, nil
 }
 
 func (dl YoutubeDl) exec(ctx context.Context, args ...string) (string, error) {
@@ -112,7 +118,7 @@ func (dl YoutubeDl) exec(ctx context.Context, args ...string) (string, error) {
 }
 
 func buildArgs(feedConfig *config.Feed, episode *model.Episode, outputFilePath string) []string {
-	var args []string
+	args := append([]string{}, feedConfig.DownloaderOpts...)
 
 	if feedConfig.Format == model.FormatVideo {
 		// Video, mp4, high by default
@@ -138,4 +144,13 @@ func buildArgs(feedConfig *config.Feed, episode *model.Episode, outputFilePath s
 
 	args = append(args, "--output", outputFilePath, episode.VideoURL)
 	return args
+}
+
+func (f *tempFile) Close() error {
+	err := f.File.Close()
+	err1 := os.RemoveAll(f.dir)
+	if err1 != nil {
+		log.Errorf("Could not remove temp dir: %v", err1)
+	}
+	return err
 }
