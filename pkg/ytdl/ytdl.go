@@ -67,7 +67,7 @@ func (dl YoutubeDl) Download(ctx context.Context, feedConfig *config.Feed, episo
 		if err != nil {
 			err1 := os.RemoveAll(tmpDir)
 			if err1 != nil {
-				log.Errorf("Could not remove temp dir: %v", err1)
+				log.Errorf("could not remove temp dir: %v", err1)
 			}
 		}
 	}()
@@ -150,7 +150,7 @@ func (f *tempFile) Close() error {
 	err := f.File.Close()
 	err1 := os.RemoveAll(f.dir)
 	if err1 != nil {
-		log.Errorf("Could not remove temp dir: %v", err1)
+		log.Errorf("could not remove temp dir: %v", err1)
 	}
 	return err
 }

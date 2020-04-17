@@ -18,6 +18,8 @@ import (
 	"github.com/dop251/podsync/pkg/db"
 	"github.com/dop251/podsync/pkg/fs"
 	"github.com/dop251/podsync/pkg/ytdl"
+
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type Opts struct {
@@ -72,6 +74,23 @@ func main() {
 		log.Info(banner)
 	}
 
+	// Load TOML file
+	log.Debugf("loading configuration %q", opts.ConfigPath)
+	cfg, err := config.LoadConfig(opts.ConfigPath)
+	if err != nil {
+		log.WithError(err).Fatal("failed to load configuration file")
+	}
+
+	if cfg.Log.Filename != "" {
+		log.SetOutput(&lumberjack.Logger{
+			Filename:   cfg.Log.Filename,
+			MaxSize:    cfg.Log.MaxSize,
+			MaxBackups: cfg.Log.MaxBackups,
+			MaxAge:     cfg.Log.MaxAge,
+			Compress:   cfg.Log.Compress,
+		})
+	}
+
 	log.WithFields(log.Fields{
 		"version": version,
 		"commit":  commit,
@@ -81,13 +100,6 @@ func main() {
 	downloader, err := ytdl.New(ctx)
 	if err != nil {
 		log.WithError(err).Fatal("youtube-dl error")
-	}
-
-	// Load TOML file
-	log.Debugf("loading configuration %q", opts.ConfigPath)
-	cfg, err := config.LoadConfig(opts.ConfigPath)
-	if err != nil {
-		log.WithError(err).Fatal("failed to load configuration file")
 	}
 
 	database, err := db.NewBadger(&cfg.Database)
@@ -143,7 +155,6 @@ func main() {
 			if cronid, err = c.AddFunc(_feed.CronSchedule, func() {
 				log.Debugf("adding %q to update queue", _feed.ID)
 				updates <- _feed
-
 			}); err != nil {
 				log.WithError(err).Fatalf("can't create cron task for feed: %s", _feed.ID)
 			}
