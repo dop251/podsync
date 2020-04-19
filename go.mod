@@ -18,7 +18,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20180620175406-ef147856a6dd
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	google.golang.org/api v0.0.0-20180718221112-efcb5f25ac56
-	google.golang.org/appengine v1.1.0 // indirect
+	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
