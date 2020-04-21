@@ -16,7 +16,10 @@ func TestLoadConfig(t *testing.T) {
 	const file = `
 [tokens]
 youtube = "123"
-vimeo = "321"
+vimeo = [
+  "321",
+  "456"
+]
 
 [server]
 port = 80
@@ -24,6 +27,9 @@ data_dir = "test/data/"
 
 [database]
 dir = "/home/user/db/"
+
+[downloader]
+self_update = true
 
 [feeds]
   [feeds.XYZ]
@@ -42,15 +48,18 @@ dir = "/home/user/db/"
 
 	config, err := LoadConfig(path)
 	assert.NoError(t, err)
-	assert.NotNil(t, config)
+	require.NotNil(t, config)
 
 	assert.Equal(t, "test/data/", config.Server.DataDir)
 	assert.EqualValues(t, 80, config.Server.Port)
 
 	assert.Equal(t, "/home/user/db/", config.Database.Dir)
 
-	assert.Equal(t, "123", config.Tokens.YouTube)
-	assert.Equal(t, "321", config.Tokens.Vimeo)
+	require.Len(t, config.Tokens["youtube"], 1)
+	assert.Equal(t, "123", config.Tokens["youtube"][0])
+	require.Len(t, config.Tokens["vimeo"], 2)
+	assert.Equal(t, "321", config.Tokens["vimeo"][0])
+	assert.Equal(t, "456", config.Tokens["vimeo"][1])
 
 	assert.Len(t, config.Feeds, 1)
 	feed, ok := config.Feeds["XYZ"]
@@ -70,6 +79,30 @@ dir = "/home/user/db/"
 	assert.EqualValues(t, []string{"--verbose", "-4"}, feed.DownloaderOpts)
 
 	assert.Nil(t, config.Database.Badger)
+
+	assert.True(t, config.Downloader.SelfUpdate)
+}
+
+func TestLoadEmptyKeyList(t *testing.T) {
+	const file = `
+[tokens]
+vimeo = []
+
+[server]
+data_dir = "/data"
+[feeds]
+  [feeds.A]
+  url = "https://youtube.com/watch?v=ygIUF678y40"
+`
+	path := setup(t, file)
+	defer os.Remove(path)
+
+	config, err := LoadConfig(path)
+	assert.NoError(t, err)
+	require.NotNil(t, config)
+
+	require.Len(t, config.Tokens, 1)
+	require.Len(t, config.Tokens["vimeo"], 0)
 }
 
 func TestApplyDefaults(t *testing.T) {
