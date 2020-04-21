@@ -74,7 +74,22 @@ func New(ctx context.Context, update bool) (*YoutubeDl, error) {
 	return ytdl, nil
 }
 
-func (dl YoutubeDl) Download(ctx context.Context, feedConfig *config.Feed, episode *model.Episode) (r io.ReadCloser, err error) {
+func (dl *YoutubeDl) Update(ctx context.Context) error {
+	dl.updateLock.Lock()
+	defer dl.updateLock.Unlock()
+
+	log.Info("updating youtube-dl")
+	output, err := dl.exec(ctx, "--update", "--verbose")
+	if err != nil {
+		log.WithError(err).Error(output)
+		return errors.Wrap(err, "failed to self update youtube-dl")
+	}
+
+	log.Info(output)
+	return nil
+}
+
+func (dl *YoutubeDl) Download(ctx context.Context, feedConfig *config.Feed, episode *model.Episode) (r io.ReadCloser, err error) {
 	tmpDir, err := ioutil.TempDir("", "podsync-")
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get temp dir for download")
